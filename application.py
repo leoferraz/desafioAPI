@@ -1,0 +1,78 @@
+from flask import Flask, request
+from flask_cors import CORS
+from pymongo import MongoClient
+from random import randint
+from bson import json_util
+
+application = Flask(__name__)
+CORS(application)  # Habilitar CORS
+
+#local
+client = MongoClient("mongodb://localhost:27017/")
+
+#aws
+#client = MongoClient("mongodb://bancodm:leo180678@docdb-2023-05-29-14-28-59.cluster-cigoyjjdczx5.us-east-2.docdb.amazonaws.com:27017/?replicaSet=rs0&readPreference=secondaryPreferred&retryWrites=false")
+db = client["mongodm"]
+pedidos = db["pedidos"]
+
+def scoreGen():
+    return randint(1, 999)
+
+@application.route("/listAll", methods=['GET'])
+def listAll():
+    pedido_list = list(pedidos.find())
+    return json_util.dumps({'pedidos': pedido_list})
+
+@application.route("/deletePedido/<cpf>", methods=['DELETE'])
+def deletePedido(cpf):
+    pedidos.delete_one({'cpf': cpf})
+    return {'status': 'success'}
+
+from bson import json_util
+
+@application.route("/insertPedido", methods=['POST'])
+def insertPedido():
+    data = request.get_json()
+    cpf = data.get("cpf")
+    nome = data.get("nome")
+    email = data.get("email")
+    renda = data.get("renda")
+    
+    # Se renda for None, seta como 0.0
+    renda = float(renda) if renda is not None else 0.0
+
+    score = scoreGen()
+
+    if 1 <= score <= 299:
+        status = "REPROVADO"
+        limite = 0
+    elif 300 <= score <= 599:
+        status = "APROVADO"
+        limite = 1000
+    elif 600 <= score <= 799:
+        status = "APROVADO"
+        limite = renda / 2
+        if limite < 1000:
+            limite = 1000
+    elif 800 <= score <= 950:
+        status = "APROVADO"
+        limite = renda * 2
+    elif 951 <= score <= 999:
+        status = "APROVADO"
+        limite = 1000000
+
+    pedido = {"cpf": cpf, "nome": nome, "email": email, "renda": renda, "score": score, "limite": limite, "status": status}
+    pedidos.insert_one(pedido)
+
+    # Consulta o pedido recém-inserido para pegar os dados completos
+    inserted_pedido = pedidos.find_one({"cpf": cpf})
+
+    # Converte o ObjectId em uma representação serializável
+    inserted_pedido['_id'] = str(inserted_pedido['_id'])
+
+    return {'pedido': json_util.dumps(inserted_pedido)}
+
+
+
+if __name__ == "__main__":
+    application.run(port=5000, debug=True)
