@@ -5,24 +5,24 @@ from random import randint
 from bson import json_util
 
 application = Flask(__name__)
-CORS(application)  # Habilitar CORS
+CORS(application)  # Habilitar CORS localmente
 
-#local
-client = MongoClient("mongodb://localhost:27017/")
-
-#aws
-#client = MongoClient("mongodb://bancodm:leo180678@docdb-2023-05-29-14-28-59.cluster-cigoyjjdczx5.us-east-2.docdb.amazonaws.com:27017/?replicaSet=rs0&readPreference=secondaryPreferred&retryWrites=false")
+#aws documentDB
+client = MongoClient("mongodb://bancodm:leo180678@docdb-2023-05-29-14-28-59.cluster-cigoyjjdczx5.us-east-2.docdb.amazonaws.com:27017/?replicaSet=rs0&readPreference=secondaryPreferred&retryWrites=false")
 db = client["mongodm"]
 pedidos = db["pedidos"]
 
+#função para gerar o score
 def scoreGen():
     return randint(1, 999)
 
+#rota para listar os pedidos
 @application.route("/listAll", methods=['GET'])
 def listAll():
     pedido_list = list(pedidos.find())
     return json_util.dumps({'pedidos': pedido_list})
 
+#rota para deletar pedidos
 @application.route("/deletePedido/<cpf>", methods=['DELETE'])
 def deletePedido(cpf):
     pedidos.delete_one({'cpf': cpf})
@@ -30,6 +30,7 @@ def deletePedido(cpf):
 
 from bson import json_util
 
+#rota para inserir pedido
 @application.route("/insertPedido", methods=['POST'])
 def insertPedido():
     data = request.get_json()
@@ -41,6 +42,7 @@ def insertPedido():
     # Se renda for None, seta como 0.0
     renda = float(renda) if renda is not None else 0.0
 
+    #função pra gerar score e atribuir o result
     score = scoreGen()
 
     if 1 <= score <= 299:
@@ -61,6 +63,7 @@ def insertPedido():
         status = "APROVADO"
         limite = 1000000
 
+    #inserir pedido no mongoDB
     pedido = {"cpf": cpf, "nome": nome, "email": email, "renda": renda, "score": score, "limite": limite, "status": status}
     pedidos.insert_one(pedido)
 
