@@ -13,6 +13,7 @@ A aplicação possui as seguintes rotas:
 Rota de verificação de saúde da API, retorna o status da API.
 
 GET /
+
 Resposta:
 
 {
@@ -23,6 +24,7 @@ Resposta:
 Esta rota lista todos os pedidos existentes no banco de dados.
 
 GET /listAll
+
 Resposta:
 
 {
@@ -52,6 +54,7 @@ Resposta:
 Esta rota insere um novo pedido no banco de dados. Ele aceita dados no formato JSON no corpo da solicitação com os seguintes campos: cpf, nome, email, renda. Ele calcula o "score" usando um método de geração de números aleatórios e, com base no score, atribui um status e limite.
 
 POST /insertPedido
+
 Corpo da solicitação:
 
 {
