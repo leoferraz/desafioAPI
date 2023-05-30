@@ -34,4 +34,4 @@ jobs:
         environment_name: ${{ secrets.BS_ENV_NAME }}
         version_label: Github Action - ${{ github.run_number }}
         region: ${{ secrets.AWS_REGION }}
-        deployment_package: ${{ secrets.PACKAGE_NAME }} 
+        deployment_package: application.zip 
