@@ -16,6 +16,10 @@ pedidos = db["pedidos"]
 def scoreGen():
     return randint(1, 999)
 
+@application.route("/", methods=['GET'])
+def healthcheck():
+    print ("API Ok")
+
 #rota para listar os pedidos
 @application.route("/listAll", methods=['GET'])
 def listAll():
