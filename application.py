@@ -30,7 +30,7 @@ def listAll():
 @application.route("/deletePedido/<cpf>", methods=['DELETE'])
 def deletePedido(cpf):
     pedidos.delete_one({'cpf': cpf})
-    return {'status': 'success'}
+    return {'status': 'pedido deletado'}
 
 from bson import json_util
 
