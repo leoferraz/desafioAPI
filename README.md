@@ -41,6 +41,7 @@ Resposta:
 Esta rota deleta um pedido específico baseado no CPF fornecido.
 
 DELETE /deletePedido/{cpf}
+
 Resposta:
 
 {
