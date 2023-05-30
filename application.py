@@ -18,7 +18,7 @@ def scoreGen():
 
 @application.route("/", methods=['GET'])
 def healthcheck():
-    print ("API Ok")
+    return {'status da api': 'ok'}
 
 #rota para listar os pedidos
 @application.route("/listAll", methods=['GET'])
