@@ -9,7 +9,7 @@ CORS(application)  # Habilitar CORS localmente
 
 #aws documentDB
 #client = MongoClient("mongodb://bancodm:leo180678@docdb-2023-05-29-14-28-59.cluster-cigoyjjdczx5.us-east-2.docdb.amazonaws.com:27017/?replicaSet=rs0&readPreference=secondaryPreferred&retryWrites=false")
-client = MongoClient("mongodb+srv://bancodm:<password>@cluster0.ooxmyc5.mongodb.net/")
+client = MongoClient("mongodb+srv://bancodm:leo180678@cluster0.ooxmyc5.mongodb.net/")
 
 db = client["mongodm"]
 pedidos = db["pedidos"]
